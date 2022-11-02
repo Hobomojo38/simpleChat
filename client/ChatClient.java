@@ -77,6 +77,25 @@ public class ChatClient extends AbstractClient
       quit();
     }
   }
+
+  /**
+   * This method is called each time an exception is thrown by the
+   * client's thread that is waiting for messages from the server.
+   * 
+   * @param exception the exception raised.
+   */
+  public void connectionException(Exception exception) {
+    connectionClosed();
+  }
+
+  /**
+   * This method informs the client of the server's closing and
+   * terminates the client.
+   */
+  public void connectionClosed() {
+    clientUI.display("Connection with server closed.");
+    quit();
+  }
   
   /**
    * This method terminates the client.
