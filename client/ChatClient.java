@@ -60,21 +60,82 @@ public class ChatClient extends AbstractClient
   }
 
   /**
+   * This method handles all commands given by
+   * the user.
+   * @param command The command and its args given by the user.
+   */
+
+  protected void runCommand(String command){
+    String[] commandArgs = command.split(" ");
+
+    switch (commandArgs[0]) {
+      case "quit":
+        quit();
+        break;
+      case "logoff":
+        try { closeConnection();} 
+        catch (IOException e) {e.printStackTrace();}
+        break;
+      case "sethost":
+        if (isConnected() == false){
+          setHost(commandArgs[1]);
+        }
+        else{
+          clientUI.display("Cannot change host while connected");
+        }
+        break;
+      case "setport":
+        if (isConnected() == false){
+          setPort(Integer.parseInt(commandArgs[1]));
+        }
+        else{
+          clientUI.display("Cannot change port while connected");
+        }
+        break;
+      case "login":
+        if (isConnected() == false){
+          try { openConnection();} 
+          catch (IOException e) {e.printStackTrace();}
+        }
+        else{
+          clientUI.display("Already connected");
+        }
+        break;
+      case "gethost":
+      clientUI.display("Current host: " + getHost());
+        break;
+      case "getport":
+      clientUI.display("Current host: " + getPort());
+        break;
+      default:
+        clientUI.display("Invalid command");
+        break;
+    }
+  }
+
+  /**
    * This method handles all data coming from the UI            
    *
    * @param message The message from the UI.    
    */
   public void handleMessageFromClientUI(String message)
   {
-    try
+    if (message.charAt(0) == '#') //If the message is a command
     {
-      sendToServer(message);
+      runCommand(message);
     }
-    catch(IOException e)
+    else
     {
-      clientUI.display
-        ("Could not send message to server.  Terminating client.");
-      quit();
+      try
+      {
+        sendToServer(message);
+      }
+      catch(IOException e)
+      {
+        clientUI.display
+          ("Could not send message to server.  Terminating client.");
+        quit();
+      }
     }
   }
 
@@ -84,17 +145,16 @@ public class ChatClient extends AbstractClient
    * 
    * @param exception the exception raised.
    */
-  public void connectionException(Exception exception) {
-    connectionClosed();
+  protected void connectionException(Exception exception) {
+    quit();
   }
 
   /**
    * This method informs the client of the server's closing and
    * terminates the client.
    */
-  public void connectionClosed() {
+  protected void connectionClosed() {
     clientUI.display("Connection with server closed.");
-    quit();
   }
   
   /**

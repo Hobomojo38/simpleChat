@@ -3,6 +3,9 @@
 // license found at www.lloseng.com 
 
 
+import java.io.IOException;
+
+import common.ChatIF;
 import ocsf.server.*;
 
 /**
@@ -23,6 +26,8 @@ public class EchoServer extends AbstractServer
    * The default port to listen on.
    */
   final public static int DEFAULT_PORT = 5555;
+
+  private static ChatIF serverUI;
   
   //Constructors ****************************************************
   
@@ -50,6 +55,80 @@ public class EchoServer extends AbstractServer
   {
     System.out.println("Message received: " + msg + " from " + client);
     this.sendToAllClients(msg);
+  }
+
+  public void handleMessageFromServerUI(String message)
+  {
+    if(message.charAt(0) == '#')
+    {
+      runCommand(message);
+    }
+    else
+    {
+      serverUI.display("SERVER MSG> " + message);
+      this.sendToAllClients("SERVER MSG> " + message);
+    }
+  }
+
+  protected void runCommand(String message)
+  {
+    String[] commandArgs = message.split(" ");
+    switch(commandArgs[0])
+    {
+      case "#quit":
+
+        stopListening();
+
+        try {
+          close();
+        } catch (IOException e1) { e1.printStackTrace(); }
+
+        System.exit(0);
+
+        break;
+      case "#stop":
+        stopListening();
+        break;
+      case "#close":
+        try { close(); }
+        catch(IOException e) { serverUI.display("Error closing server."); }
+        break;
+      case "#setport":
+        if(getNumberOfClients() == 0 && !isListening())
+        {
+          try { setPort(Integer.parseInt(commandArgs[1])); }
+          catch(NumberFormatException e)
+          { serverUI.display("Error: Invalid port number."); }
+        }
+        else
+        {
+          serverUI.display("Error: Cannot change port number while server is running.");
+        }
+        break;
+      case "#start":
+        if(!this.isListening())
+        {
+          try
+          {
+            listen();
+          }
+          catch(IOException e)
+          {
+            serverUI.display("Error: Could not listen for clients.");
+          }
+        }
+        else
+        {
+          serverUI.display("Error: Server is already listening for clients.");
+        }
+        break;
+      case "#getport":
+        serverUI.display("Port: " + getPort());
+        break;
+      default:
+        serverUI.display("Error: Invalid command.");
+        break;
+    }
   }
     
   /**
@@ -120,6 +199,8 @@ public class EchoServer extends AbstractServer
     {
       System.out.println("ERROR - Could not listen for clients!");
     }
+
+    serverUI = new ServerConsole(port);
   }
 }
 //End of EchoServer class
