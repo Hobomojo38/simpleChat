@@ -103,11 +103,8 @@ public abstract class AbstractClient implements Runnable {
 
 		// Create the sockets and the data streams
 		try {
-			System.out.println("Creating socket to " + host + " on port " + port);
 			clientSocket = new Socket(host, port);
-			System.out.println("Creating output stream");
 			output = new ObjectOutputStream(clientSocket.getOutputStream());
-			System.out.println("Creating input stream");
 			input = new ObjectInputStream(clientSocket.getInputStream());
 		} catch (IOException ex)
 		// All three of the above must be closed when there is a failure

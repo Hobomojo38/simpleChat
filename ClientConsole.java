@@ -57,11 +57,7 @@ public class ClientConsole implements ChatIF
   {
     try 
     {
-      display("Creating Session");
-      client= new ChatClient(userId, host, port, this);
-      display("Session Created");
-      
-      
+      client= new ChatClient(userId, host, port, this);      
     } 
     catch(IOException exception) 
     {
@@ -90,7 +86,6 @@ public class ClientConsole implements ChatIF
 
       while (true)
       {
-        display("Waiting for input from console");
         message = fromConsole.nextLine();
         client.handleMessageFromClientUI(message);
       }

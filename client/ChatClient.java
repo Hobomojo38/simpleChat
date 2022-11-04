@@ -46,7 +46,6 @@ public class ChatClient extends AbstractClient
     super(host, port); //Call the superclass constructor
     this.userId = userId;
     this.clientUI = clientUI;
-    clientUI.display("Connecting to server " + host + " on port " + port);
     openConnection();
     sendToServer("#login " + userId);
   }
@@ -74,14 +73,14 @@ public class ChatClient extends AbstractClient
     String[] commandArgs = command.split(" ");
 
     switch (commandArgs[0]) {
-      case "quit":
+      case "#quit":
         quit();
         break;
-      case "logoff":
+      case "#logoff":
         try { closeConnection();} 
         catch (IOException e) {e.printStackTrace();}
         break;
-      case "sethost":
+      case "#sethost":
         if (isConnected() == false){
           setHost(commandArgs[1]);
         }
@@ -89,7 +88,7 @@ public class ChatClient extends AbstractClient
           clientUI.display("Cannot change host while connected");
         }
         break;
-      case "setport":
+      case "#setport":
         if (isConnected() == false){
           setPort(Integer.parseInt(commandArgs[1]));
         }
@@ -97,7 +96,7 @@ public class ChatClient extends AbstractClient
           clientUI.display("Cannot change port while connected");
         }
         break;
-      case "login":
+      case "#login":
         if (isConnected() == false){
           try { openConnection();} 
           catch (IOException e) {e.printStackTrace();}
@@ -106,10 +105,10 @@ public class ChatClient extends AbstractClient
           clientUI.display("Already connected");
         }
         break;
-      case "gethost":
+      case "#gethost":
       clientUI.display("Current host: " + getHost());
         break;
-      case "getport":
+      case "#getport":
       clientUI.display("Current host: " + getPort());
         break;
       default:
