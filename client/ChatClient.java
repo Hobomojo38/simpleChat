@@ -27,6 +27,9 @@ public class ChatClient extends AbstractClient
    */
   ChatIF clientUI; 
 
+  /**
+   * The login ID of the client.
+   */
   String userId;
 
   
@@ -46,6 +49,8 @@ public class ChatClient extends AbstractClient
     super(host, port); //Call the superclass constructor
     this.userId = userId;
     this.clientUI = clientUI;
+
+    //Opens connection and logs in client
     openConnection();
     sendToServer("#login " + userId);
   }
@@ -68,19 +73,23 @@ public class ChatClient extends AbstractClient
    * the user.
    * @param command The command and its args given by the user.
    */
-
   protected void runCommand(String command){
+    //Seperates the command from the arguments
     String[] commandArgs = command.split(" ");
 
+    // Runs the appropriate command
     switch (commandArgs[0]) {
-      case "#quit":
+
+      case "#quit": // Disconnects and terminates client 
         quit();
         break;
-      case "#logoff":
+
+      case "#logoff": // Disconnects from server
         try { closeConnection();} 
         catch (IOException e) {e.printStackTrace();}
         break;
-      case "#sethost":
+
+      case "#sethost": // Switches the host server
         if (isConnected() == false){
           setHost(commandArgs[1]);
         }
@@ -88,7 +97,8 @@ public class ChatClient extends AbstractClient
           clientUI.display("Cannot change host while connected");
         }
         break;
-      case "#setport":
+
+      case "#setport": // Switches the port
         if (isConnected() == false){
           setPort(Integer.parseInt(commandArgs[1]));
         }
@@ -96,21 +106,26 @@ public class ChatClient extends AbstractClient
           clientUI.display("Cannot change port while connected");
         }
         break;
-      case "#login":
+
+      case "#login": // Connects to server with a specified user id
         if (isConnected() == false){
-          try { openConnection();} 
+          try { openConnection();
+            sendToServer("#login " + userId);} 
           catch (IOException e) {e.printStackTrace();}
         }
         else{
           clientUI.display("Already connected");
         }
         break;
+
       case "#gethost":
       clientUI.display("Current host: " + getHost());
         break;
+
       case "#getport":
       clientUI.display("Current host: " + getPort());
         break;
+
       default:
         clientUI.display("Invalid command");
         break;
@@ -143,6 +158,9 @@ public class ChatClient extends AbstractClient
     }
   }
 
+  /**
+   * Returns the userId of the client
+   */
   protected String getUserId(){
     return userId;
   }

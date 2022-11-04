@@ -31,6 +31,7 @@ public class ClientConsole implements ChatIF
    * The default character to specify a command.
    */
   public static final char COMMAND_CHAR = '#';
+
   //Instance variables **********************************************
   
   /**
@@ -50,6 +51,7 @@ public class ClientConsole implements ChatIF
   /**
    * Constructs an instance of the ClientConsole UI.
    *
+   * @param userId The user id to assign to this client.
    * @param host The host to connect to.
    * @param port The port to connect on.
    */
@@ -118,7 +120,9 @@ public class ClientConsole implements ChatIF
    */
   public static void main(String[] args) 
   {
+    // Get userId from command line.  If none is specified, terminate client.
     String userId = "";
+
     try {
       userId = args[0];
     } catch (ArrayIndexOutOfBoundsException e) {
@@ -126,7 +130,7 @@ public class ClientConsole implements ChatIF
       System.exit(0);
     }
 
-
+    // Get host server from command line.  If none is specified, use the default.
     String host = "";
 
     try
@@ -138,6 +142,7 @@ public class ClientConsole implements ChatIF
       host = "localhost";
     }
 
+    // Get port from command line.  If none is specified, use the default.
     int port = 0;
 
     try {
@@ -146,6 +151,8 @@ public class ClientConsole implements ChatIF
     catch(ArrayIndexOutOfBoundsException e) {
       port = DEFAULT_PORT;
     }
+
+    // Create client console.
     ClientConsole chat= new ClientConsole(userId, host, port);
     chat.accept();  //Wait for console data
   }
