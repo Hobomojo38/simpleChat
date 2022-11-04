@@ -39,11 +39,10 @@ public class ClientConsole implements ChatIF
   ChatClient client;
   
   
-  
   /**
    * Scanner to read from the console
    */
-  Scanner fromConsole; 
+  Scanner fromConsole;
 
   
   //Constructors ****************************************************
@@ -54,12 +53,12 @@ public class ClientConsole implements ChatIF
    * @param host The host to connect to.
    * @param port The port to connect on.
    */
-  public ClientConsole(String host, int port) 
+  public ClientConsole(String userId, String host, int port) 
   {
     try 
     {
       display("Creating Session");
-      client= new ChatClient(host, port, this);
+      client= new ChatClient(userId, host, port, this);
       display("Session Created");
       
       
@@ -124,12 +123,20 @@ public class ClientConsole implements ChatIF
    */
   public static void main(String[] args) 
   {
-    String host = "";
+    String userId = "";
+    try {
+      userId = args[0];
+    } catch (ArrayIndexOutOfBoundsException e) {
+      System.out.println("Please enter a user id");
+      System.exit(0);
+    }
 
+
+    String host = "";
 
     try
     {
-      host = args[0];
+      host = args[1];
     }
     catch(ArrayIndexOutOfBoundsException e)
     {
@@ -139,12 +146,12 @@ public class ClientConsole implements ChatIF
     int port = 0;
 
     try {
-      port = Integer.parseInt(args[1]);
+      port = Integer.parseInt(args[2]);
     }
     catch(ArrayIndexOutOfBoundsException e) {
       port = DEFAULT_PORT;
     }
-    ClientConsole chat= new ClientConsole(host, port);
+    ClientConsole chat= new ClientConsole(userId, host, port);
     chat.accept();  //Wait for console data
   }
 }

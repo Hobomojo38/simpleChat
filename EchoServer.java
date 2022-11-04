@@ -59,8 +59,23 @@ public class EchoServer extends AbstractServer
   public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
   {
-    System.out.println("Message received: " + msg + " from " + client);
-    this.sendToAllClients(msg);
+    String[] splStrings = ((String) msg).split(" ");
+    if (splStrings[0] == "#login"){
+      if (client.getInfo("loginID") == null){
+        client.setInfo("loginID", splStrings[1]);
+      } else {
+        try {
+          client.sendToClient("You are already logged in.");
+          close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+    else {
+      System.out.println("Message received: " + msg + " from " + client);
+      this.sendToAllClients(client.getInfo("loginID") + "> " + msg);
+    }
   }
 
   public void handleMessageFromServerUI(String message)
