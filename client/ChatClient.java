@@ -43,6 +43,7 @@ public class ChatClient extends AbstractClient
   {
     super(host, port); //Call the superclass constructor
     this.clientUI = clientUI;
+    clientUI.display("Connecting to server " + host + " on port " + port);
     openConnection();
   }
 

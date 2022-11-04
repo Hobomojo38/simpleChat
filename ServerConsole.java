@@ -11,7 +11,10 @@ public class ServerConsole implements ChatIF{
 
     ServerConsole(int port){
 
-        server = new EchoServer(port);
+        server = new EchoServer(port, this);
+
+        console = new Scanner(System.in);
+
     }
 
     @Override
@@ -40,7 +43,7 @@ public class ServerConsole implements ChatIF{
             port = 5555; //Set port to 5555
         }
 
-        ServerConsole console = new ServerConsole(port);
-        console.waitForMessage();
+        ServerConsole chat = new ServerConsole(port);
+        chat.waitForMessage();
     }
 }

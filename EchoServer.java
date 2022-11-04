@@ -36,6 +36,12 @@ public class EchoServer extends AbstractServer
    *
    * @param port The port number to connect on.
    */
+  public EchoServer(int port, ChatIF serverUI) 
+  {
+    super(port);
+    this.serverUI = serverUI;
+  }
+
   public EchoServer(int port) 
   {
     super(port);
